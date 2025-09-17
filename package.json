@@ -1,0 +1,43 @@
+{
+  "name": "cw.helper.dev.runner",
+  "version": "1.10.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "lint:fix": "npm run lint -- --fix",
+    "dev": "ts-node src/cli.ts",
+    "format": "prettier \"src/**/*.ts\" \"tests/**/*.ts\" --write",
+    "format:check": "prettier \"src/**/*.ts\" \"tests/**/*.ts\" --check",
+    "prepare": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Lightweight development runner for cw projects.",
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.5.1",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.1.3",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.0"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "cw-dev-runner": "dist/cli.js"
+  }
+}
