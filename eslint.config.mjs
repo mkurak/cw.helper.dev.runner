@@ -14,7 +14,7 @@ export default tseslint.config(
       prettier: prettierPlugin
     },
     rules: {
-      'prettier/prettier': 'error'
+      'prettier/prettier': ['error', { tabWidth: 4 }]
     }
   }
 );

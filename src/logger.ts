@@ -6,7 +6,7 @@ function ts() {
 
 export class Logger {
     constructor(
-        private scope: string,
+        private scope: string = 'cw-dev-runner',
         private level: LogLevel = 'info'
     ) {}
 
@@ -15,16 +15,16 @@ export class Logger {
         return order[level] >= order[this.level];
     }
 
-    debug(msg: string) {
-        if (this.should('debug')) console.log(`[${ts()}] [${this.scope}] [DEBUG] ${msg}`);
+    debug(msg: string, ...args: unknown[]) {
+        if (this.should('debug')) console.log(`[${ts()}] [${this.scope}] [DEBUG] ${msg}`, ...args);
     }
-    info(msg: string) {
-        if (this.should('info')) console.log(`[${ts()}] [${this.scope}] [INFO] ${msg}`);
+    info(msg: string, ...args: unknown[]) {
+        if (this.should('info')) console.log(`[${ts()}] [${this.scope}] [INFO] ${msg}`, ...args);
     }
-    warn(msg: string) {
-        if (this.should('warn')) console.warn(`[${ts()}] [${this.scope}] [WARN] ${msg}`);
+    warn(msg: string, ...args: unknown[]) {
+        if (this.should('warn')) console.warn(`[${ts()}] [${this.scope}] [WARN] ${msg}`, ...args);
     }
-    error(msg: string) {
-        if (this.should('error')) console.error(`[${ts()}] [${this.scope}] [ERROR] ${msg}`);
+    error(msg: string, ...args: unknown[]) {
+        if (this.should('error')) console.error(`[${ts()}] [${this.scope}] [ERROR] ${msg}`, ...args);
     }
 }
