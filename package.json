@@ -11,7 +11,8 @@
     "dev": "ts-node src/cli.ts",
     "format": "prettier \"src/**/*.ts\" \"tests/**/*.ts\" --write",
     "format:check": "prettier \"src/**/*.ts\" \"tests/**/*.ts\" --check",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
