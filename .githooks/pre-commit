@@ -14,8 +14,8 @@ run_step() {
 
 run_step "Formatting staged files" npm run format
 
-# Stage any formatting updates so lint sees the latest output
-git add --update
+# Stage tüm değişiklikleri (yeni dosyalar dahil) yeniden ekle
+git add --all
 
 run_step "Running lint checks" npm run lint
 run_step "Running coverage gate (>= 90%)" npm run test:coverage
