@@ -28,4 +28,3 @@ describe('util', () => {
         expect(ok).toBe(false);
     });
 });
-

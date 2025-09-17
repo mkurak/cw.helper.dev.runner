@@ -95,11 +95,11 @@ async function main() {
         if (code !== null && code !== 0) {
             log.warn(`Process exited with code ${code}`);
         }
+        runProc = undefined;
     });
 }
 
 main().catch((err) => {
-    // eslint-disable-next-line no-console
     console.error(err);
     process.exit(1);
 });

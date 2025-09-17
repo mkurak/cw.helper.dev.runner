@@ -7,17 +7,21 @@ export async function waitForPath(
     const timeoutMs = opts.timeoutMs ?? 30_000;
     const intervalMs = opts.intervalMs ?? 200;
     const start = Date.now();
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+
+    while (Date.now() - start <= timeoutMs) {
         try {
             const s = await stat(path);
-            if (s.isFile() || s.isDirectory()) return true;
+            if (s.isFile() || s.isDirectory()) {
+                return true;
+            }
         } catch {
             // not exists yet
         }
-        if (Date.now() - start > timeoutMs) return false;
-        await new Promise((r) => setTimeout(r, intervalMs));
+
+        await new Promise((resolve) => setTimeout(resolve, intervalMs));
     }
+
+    return false;
 }
 
 export function deriveRunWatchCommand(runCommand: string): string {

@@ -11,11 +11,16 @@ describe('Logger', () => {
         console.error = origError;
     });
 
+    const capture =
+        (messages: string[]) =>
+        (...args: unknown[]) =>
+            messages.push(args.map(String).join(' '));
+
     it('emits messages according to level and includes scope', () => {
         const messages: string[] = [];
-        console.log = (...args: any[]) => messages.push(args.join(' '));
-        console.warn = (...args: any[]) => messages.push(args.join(' '));
-        console.error = (...args: any[]) => messages.push(args.join(' '));
+        console.log = capture(messages);
+        console.warn = capture(messages);
+        console.error = capture(messages);
 
         const logger = new Logger('test-scope', 'debug');
         logger.debug('hello', { a: 1 });
@@ -33,7 +38,7 @@ describe('Logger', () => {
 
     it('suppresses debug when level is higher', () => {
         const messages: string[] = [];
-        console.log = (...args: any[]) => messages.push(args.join(' '));
+        console.log = capture(messages);
 
         const logger = new Logger('x', 'warn');
         logger.debug('hidden');
@@ -41,4 +46,3 @@ describe('Logger', () => {
         expect(messages.some((m) => m.includes('[DEBUG]') || m.includes('[INFO]'))).toBe(false);
     });
 });
-

@@ -1,6 +1,6 @@
 {
   "name": "cw.helper.dev.runner",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json",
@@ -11,8 +11,9 @@
     "dev": "ts-node src/cli.ts",
     "format": "prettier \"src/**/*.ts\" \"tests/**/*.ts\" --write",
     "format:check": "prettier \"src/**/*.ts\" \"tests/**/*.ts\" --check",
-    "prepare": "npm run build",
-    "test:coverage": "jest --coverage"
+    "prepare": "npm run build && npm run hooks:install",
+    "test:coverage": "jest --coverage",
+    "hooks:install": "node scripts/setup-hooks.js"
   },
   "keywords": [],
   "author": "",

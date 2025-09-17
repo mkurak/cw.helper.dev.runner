@@ -25,6 +25,7 @@ export class Logger {
         if (this.should('warn')) console.warn(`[${ts()}] [${this.scope}] [WARN] ${msg}`, ...args);
     }
     error(msg: string, ...args: unknown[]) {
-        if (this.should('error')) console.error(`[${ts()}] [${this.scope}] [ERROR] ${msg}`, ...args);
+        if (this.should('error'))
+            console.error(`[${ts()}] [${this.scope}] [ERROR] ${msg}`, ...args);
     }
 }
