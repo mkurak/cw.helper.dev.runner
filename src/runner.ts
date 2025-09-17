@@ -6,177 +6,177 @@ import { ResolvedRunnerConfig } from './types';
 import { executeCommand, resolveExecutable } from './processUtils';
 
 export class DevRunner {
-  private watcher?: DirectoryWatcher;
-  private runProcess?: ChildProcess;
-  private restartTimer?: NodeJS.Timeout;
-  private rebuildPromise?: Promise<void>;
-  private pendingReason: string | null = null;
-  private stopping = false;
+    private watcher?: DirectoryWatcher;
+    private runProcess?: ChildProcess;
+    private restartTimer?: NodeJS.Timeout;
+    private rebuildPromise?: Promise<void>;
+    private pendingReason: string | null = null;
+    private stopping = false;
 
-  constructor(
-    private readonly config: ResolvedRunnerConfig,
-    private readonly logger = new Logger()
-  ) {}
+    constructor(
+        private readonly config: ResolvedRunnerConfig,
+        private readonly logger = new Logger()
+    ) {}
 
-  async start(): Promise<void> {
-    this.logger.info('Starting development runner');
+    async start(): Promise<void> {
+        this.logger.info('Starting development runner');
 
-    this.watcher = new DirectoryWatcher({
-      projectRoot: this.config.projectRoot,
-      watchDirs: this.config.watchDirs,
-      ignore: this.config.ignore,
-      onChange: (event) => this.handleFileChange(event.filePath, event.type),
-      logger: this.logger
-    });
+        this.watcher = new DirectoryWatcher({
+            projectRoot: this.config.projectRoot,
+            watchDirs: this.config.watchDirs,
+            ignore: this.config.ignore,
+            onChange: (event) => this.handleFileChange(event.filePath, event.type),
+            logger: this.logger
+        });
 
-    this.watcher.start();
+        this.watcher.start();
 
-    await this.triggerRebuild('initial startup');
-  }
-
-  async stop(): Promise<void> {
-    this.stopping = true;
-
-    if (this.restartTimer) {
-      clearTimeout(this.restartTimer);
-      this.restartTimer = undefined;
+        await this.triggerRebuild('initial startup');
     }
 
-    if (this.watcher) {
-      this.watcher.stop();
+    async stop(): Promise<void> {
+        this.stopping = true;
+
+        if (this.restartTimer) {
+            clearTimeout(this.restartTimer);
+            this.restartTimer = undefined;
+        }
+
+        if (this.watcher) {
+            this.watcher.stop();
+        }
+
+        await this.stopRunProcess('SIGTERM');
     }
 
-    await this.stopRunProcess('SIGTERM');
-  }
-
-  private handleFileChange(filePath: string, changeType: string): void {
-    const relative = path.relative(this.config.projectRoot, filePath);
-    this.logger.info(`Detected ${changeType} in ${relative}`);
-    this.scheduleRestart(`change in ${relative}`);
-  }
-
-  private scheduleRestart(reason: string): void {
-    if (this.stopping) {
-      return;
+    private handleFileChange(filePath: string, changeType: string): void {
+        const relative = path.relative(this.config.projectRoot, filePath);
+        this.logger.info(`Detected ${changeType} in ${relative}`);
+        this.scheduleRestart(`change in ${relative}`);
     }
 
-    if (this.restartTimer) {
-      clearTimeout(this.restartTimer);
+    private scheduleRestart(reason: string): void {
+        if (this.stopping) {
+            return;
+        }
+
+        if (this.restartTimer) {
+            clearTimeout(this.restartTimer);
+        }
+
+        this.restartTimer = setTimeout(() => {
+            this.triggerRebuild(reason).catch((error) => {
+                this.logger.error('Failed to restart after change', error);
+            });
+        }, this.config.debounceMs);
     }
 
-    this.restartTimer = setTimeout(() => {
-      this.triggerRebuild(reason).catch((error) => {
-        this.logger.error('Failed to restart after change', error);
-      });
-    }, this.config.debounceMs);
-  }
+    private async triggerRebuild(reason: string): Promise<void> {
+        if (this.rebuildPromise) {
+            this.pendingReason = reason;
+            return this.rebuildPromise;
+        }
 
-  private async triggerRebuild(reason: string): Promise<void> {
-    if (this.rebuildPromise) {
-      this.pendingReason = reason;
-      return this.rebuildPromise;
+        this.logger.info(`Rebuilding due to ${reason}`);
+        this.rebuildPromise = this.rebuildAndRestart(reason);
+
+        try {
+            await this.rebuildPromise;
+        } finally {
+            this.rebuildPromise = undefined;
+            if (this.pendingReason) {
+                const nextReason = this.pendingReason;
+                this.pendingReason = null;
+                await this.triggerRebuild(nextReason);
+            }
+        }
     }
 
-    this.logger.info(`Rebuilding due to ${reason}`);
-    this.rebuildPromise = this.rebuildAndRestart(reason);
+    private async rebuildAndRestart(reason: string): Promise<void> {
+        if (this.config.build) {
+            this.logger.info(`Running build command: ${this.describeCommand(this.config.build)}`);
+            const result = await executeCommand(this.config.build, this.config.projectRoot);
 
-    try {
-      await this.rebuildPromise;
-    } finally {
-      this.rebuildPromise = undefined;
-      if (this.pendingReason) {
-        const nextReason = this.pendingReason;
-        this.pendingReason = null;
-        await this.triggerRebuild(nextReason);
-      }
-    }
-  }
+            if (result.code !== 0) {
+                this.logger.error(`Build command exited with code ${result.code ?? 'null'}`);
+                return;
+            }
+        }
 
-  private async rebuildAndRestart(reason: string): Promise<void> {
-    if (this.config.build) {
-      this.logger.info(`Running build command: ${this.describeCommand(this.config.build)}`);
-      const result = await executeCommand(this.config.build, this.config.projectRoot);
-
-      if (result.code !== 0) {
-        this.logger.error(`Build command exited with code ${result.code ?? 'null'}`);
-        return;
-      }
+        await this.restartRunProcess();
+        this.logger.info(`Application restarted after ${reason}`);
     }
 
-    await this.restartRunProcess();
-    this.logger.info(`Application restarted after ${reason}`);
-  }
-
-  private async restartRunProcess(): Promise<void> {
-    await this.stopRunProcess('SIGTERM');
-    await this.startRunProcess();
-  }
-
-  private async stopRunProcess(signal: NodeJS.Signals): Promise<void> {
-    const processRef = this.runProcess;
-    if (!processRef) {
-      return;
+    private async restartRunProcess(): Promise<void> {
+        await this.stopRunProcess('SIGTERM');
+        await this.startRunProcess();
     }
 
-    this.logger.info('Stopping running process');
+    private async stopRunProcess(signal: NodeJS.Signals): Promise<void> {
+        const processRef = this.runProcess;
+        if (!processRef) {
+            return;
+        }
 
-    await new Promise<void>((resolve) => {
-      const handleExit = () => {
-        processRef.removeAllListeners();
-        resolve();
-      };
+        this.logger.info('Stopping running process');
 
-      processRef.once('exit', handleExit);
-      processRef.once('close', handleExit);
+        await new Promise<void>((resolve) => {
+            const handleExit = () => {
+                processRef.removeAllListeners();
+                resolve();
+            };
 
-      try {
-        processRef.kill(signal);
-      } catch {
-        resolve();
-      }
+            processRef.once('exit', handleExit);
+            processRef.once('close', handleExit);
 
-      setTimeout(() => {
-        processRef.kill('SIGKILL');
-      }, 2000).unref();
-    });
+            try {
+                processRef.kill(signal);
+            } catch {
+                resolve();
+            }
 
-    this.runProcess = undefined;
-  }
+            setTimeout(() => {
+                processRef.kill('SIGKILL');
+            }, 2000).unref();
+        });
 
-  private async startRunProcess(): Promise<void> {
-    const command = this.config.run;
-    this.logger.info(`Starting command: ${this.describeCommand(command)}`);
+        this.runProcess = undefined;
+    }
 
-    const child = spawn(resolveExecutable(command.command), command.args, {
-      cwd: this.config.projectRoot,
-      stdio: 'inherit',
-      shell: command.shell,
-      env: { ...process.env, ...command.env }
-    });
+    private async startRunProcess(): Promise<void> {
+        const command = this.config.run;
+        this.logger.info(`Starting command: ${this.describeCommand(command)}`);
 
-    child.on('exit', (code, signal) => {
-      if (this.stopping) {
-        return;
-      }
+        const child = spawn(resolveExecutable(command.command), command.args, {
+            cwd: this.config.projectRoot,
+            stdio: 'inherit',
+            shell: command.shell,
+            env: { ...process.env, ...command.env }
+        });
 
-      if (code === 0) {
-        this.logger.info(`Process exited cleanly with code ${code}`);
-      } else {
-        this.logger.warn(
-          `Process exited with code ${code ?? 'null'}${signal ? ` (signal: ${signal})` : ''}`
-        );
-      }
-    });
+        child.on('exit', (code, signal) => {
+            if (this.stopping) {
+                return;
+            }
 
-    child.on('error', (error) => {
-      this.logger.error('Failed to start run command', error);
-    });
+            if (code === 0) {
+                this.logger.info(`Process exited cleanly with code ${code}`);
+            } else {
+                this.logger.warn(
+                    `Process exited with code ${code ?? 'null'}${signal ? ` (signal: ${signal})` : ''}`
+                );
+            }
+        });
 
-    this.runProcess = child;
-  }
+        child.on('error', (error) => {
+            this.logger.error('Failed to start run command', error);
+        });
 
-  private describeCommand(command: ResolvedRunnerConfig['run']): string {
-    const parts = [resolveExecutable(command.command), ...command.args];
-    return parts.join(' ');
-  }
+        this.runProcess = child;
+    }
+
+    private describeCommand(command: ResolvedRunnerConfig['run']): string {
+        const parts = [resolveExecutable(command.command), ...command.args];
+        return parts.join(' ');
+    }
 }
