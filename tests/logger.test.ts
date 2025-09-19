@@ -1,4 +1,4 @@
-import { Logger } from '../src/logger';
+import { Logger } from '../src/logger.js';
 
 describe('Logger', () => {
     const origLog = console.log;

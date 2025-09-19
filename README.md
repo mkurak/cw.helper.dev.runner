@@ -11,13 +11,11 @@
 
 ## Installation
 
-Within a package that should use the runner:
+Install the runner alongside your service or library:
 
 ```bash
-npm install --save-dev ../cw.helper.dev.runner
+npm install --save-dev cw.helper.dev.runner
 ```
-
-> Adjust the relative path according to your workspace layout or publish the package to a registry of your choice.
 
 ## Usage
 
@@ -63,6 +61,18 @@ await runner.start();
 ```
 
 Remember to call `runner.stop()` when you need to shut the watcher down programmatically.
+
+## Tooling & Scripts
+
+- `npm run build` – compile TypeScript to ESM output under `dist/`
+- `npm run test` – execute Jest (ESM mode via `ts-jest` presets)
+- `npm run test:coverage` – run tests with coverage thresholds enforced
+- `npm run lint` – lint sources and tests with ESLint 9 flat config
+- `npm run format` – apply Prettier formatting
+- `npm run release -- <type>` – bump version, commit, and push tags
+- `npm run prepublishOnly` – build and execute the smoke test ahead of publishing
+
+Pre-commit hooks (installed via `npm run prepare`) run format → lint → coverage to keep the repository consistent.
 
 ## Scripts
 

@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import {
+import fs from 'node:fs';
+import path from 'node:path';
+import type {
     CommandInput,
     CommandSpec,
     ResolvedCommandSpec,
     ResolvedRunnerConfig,
     RunnerConfig
-} from './types';
+} from './types.js';
 
 const DEFAULT_IGNORE = ['node_modules', 'dist', 'coverage', '.git'];
 const DEFAULT_WATCH_DIRS = ['src'];

@@ -1,6 +1,6 @@
-import { spawn } from 'child_process';
-import path from 'path';
-import { ResolvedCommandSpec } from './types';
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import type { ResolvedCommandSpec } from './types.js';
 
 export interface SpawnResult {
     code: number | null;

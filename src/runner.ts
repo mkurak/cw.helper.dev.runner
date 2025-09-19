@@ -1,9 +1,9 @@
-import { ChildProcess, spawn } from 'child_process';
-import path from 'path';
-import { DirectoryWatcher } from './watcher';
-import { Logger } from './logger';
-import { ResolvedRunnerConfig } from './types';
-import { executeCommand, resolveExecutable } from './processUtils';
+import { ChildProcess, spawn } from 'node:child_process';
+import path from 'node:path';
+import { DirectoryWatcher } from './watcher.js';
+import { Logger } from './logger.js';
+import type { ResolvedRunnerConfig } from './types.js';
+import { executeCommand, resolveExecutable } from './processUtils.js';
 
 export class DevRunner {
     private watcher?: DirectoryWatcher;

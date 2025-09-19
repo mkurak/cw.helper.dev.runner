@@ -1,8 +1,8 @@
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import { loadConfig, resolveConfig } from '../src/config';
-import type { RunnerConfig } from '../src/types';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { loadConfig, resolveConfig } from '../src/config.js';
+import type { RunnerConfig } from '../src/types.js';
 
 describe('config', () => {
     it('loads default configuration when no file exists', () => {

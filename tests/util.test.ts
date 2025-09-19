@@ -1,6 +1,6 @@
-import { waitForPath, deriveRunWatchCommand } from '../src/util';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { waitForPath, deriveRunWatchCommand } from '../src/util.js';
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
 
 describe('util', () => {
     it('deriveRunWatchCommand adds --watch for node commands', () => {

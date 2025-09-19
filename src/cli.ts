@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { Logger } from './logger';
-import { runCommand, runCommandAwait } from './exec';
-import { waitForPath, deriveRunWatchCommand } from './util';
-import type { CliOptions, DevRunnerConfig } from './types';
+import { Logger } from './logger.js';
+import { runCommand, runCommandAwait } from './exec.js';
+import { waitForPath, deriveRunWatchCommand } from './util.js';
+import type { CliOptions, DevRunnerConfig } from './types.js';
 
 function parseArgs(argv: string[]): CliOptions {
     const out: CliOptions = {};

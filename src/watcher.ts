@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { Logger } from './logger';
+import fs from 'node:fs';
+import path from 'node:path';
+import { Logger } from './logger.js';
 
 export type WatchEventType = 'change' | 'rename';
 
