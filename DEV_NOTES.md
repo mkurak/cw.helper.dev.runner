@@ -47,6 +47,7 @@
 - `tests/util.test.ts` creates temporary files in `coverage/` to avoid polluting the repo.
 - Watch for race conditions when touching `fs.watch`; `DirectoryWatcher` already guards against duplicate watchers.
 - When adding new modules, remember to export from `src/index.ts` and include `.js` extensions.
+- `runCommandAwait` rejects when a command cannot be spawned; see `tests/exec.test.ts` for coverage.
 
 ## Future Ideas
 - Integrate `cw.helper.colored.console` for ANSI styled logs.
