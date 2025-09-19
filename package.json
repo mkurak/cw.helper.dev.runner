@@ -64,6 +64,9 @@
   "bin": {
     "cw-dev-runner": "dist/cli.js"
   },
+  "dependencies": {
+    "cw.helper.colored.console": "^1.2.2"
+  },
   "sideEffects": false,
   "engines": {
     "node": ">=18"
