@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.8] - 2025-09-21
+### Changed
+- Removed the post-commit hook that attempted to tag releases automatically.
+
 ## [1.0.7] - 2025-09-21
 ### Added
 - Added a post-commit hook that tags and pushes version bumps automatically on the default branch.
