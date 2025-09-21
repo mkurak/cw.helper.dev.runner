@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.5] - 2025-09-21
+### Fixed
+- Corrected deployment metadata so `node scripts/release.mjs <type>` runs cleanly after the previous patch removal.
+
 ## [1.0.4] - 2025-09-21
 ### Changed
 - Dropped the legacy `release` npm script; documentation now points to `node scripts/release.mjs <type>` for manual version bumps.
