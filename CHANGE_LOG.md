@@ -1,6 +1,13 @@
 # Changelog
 
+## [1.0.9] - 2025-09-21
+### Changed
+- Pre-commit hook now runs format, lint, coverage, build, and smoke (`node scripts/smoke.mjs`) to block invalid deployments.
+
 ## [1.0.8] - 2025-09-21
+### Changed
+- Pre-commit hook now fails unless format, lint, coverage, build, and smoke (node scripts/smoke.mjs) all succeed.
+
 ### Changed
 - Removed the post-commit hook that attempted to tag releases automatically.
 
