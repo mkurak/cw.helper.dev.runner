@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.7] - 2025-09-21
+### Added
+- Added a post-commit hook that tags and pushes version bumps automatically on the default branch.
+
 ## [1.0.6] - 2025-09-21
 ### Changed
 - Removed the legacy `scripts/release.mjs` helper; releases now rely on `npm version <type>` followed by `git push --follow-tags`.
