@@ -29,14 +29,14 @@
 - `npm run test` – run Jest with Node’s ESM VM modules flag.
 - `npm run test:coverage` – same with coverage thresholds (90% statements/lines/functions).
 - `npm run lint`, `npm run format`, `npm run format:check` – static analysis and formatting.
-- `npm run release -- <type>` – wraps `npm version` and pushes commits/tags (`scripts/release.mjs`).
+- `node scripts/release.mjs <type>` – wraps `npm version` and pushes commits/tags (`scripts/release.mjs`).
 - `npm run prepublishOnly` – build + smoke test (`scripts/smoke.mjs`) before `npm publish`.
 - `npm run hooks:install` – sets `.githooks` via `scripts/setup-hooks.cjs`; invoked from `npm run prepare`.
 
 ## Release Workflow
 1. Ensure working tree is clean and docs/changelog are updated.
 2. Run tests/lint (`npm run lint && npm run test`).
-3. Execute `npm run release -- <type>`; defaults to `chore: release v%s` message and pushes automatically.
+3. Execute `node scripts/release.mjs <type>`; defaults to `chore: release v%s` message and pushes automatically.
 4. GitHub Actions workflow `.github/workflows/publish.yml` publishes to npm with provenance when a release is created.
 
 ## Publishing Notes

@@ -19,7 +19,19 @@ function run(command, args) {
 const allowedTypes = ['major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'];
 const allowed = new Set(allowedTypes);
 
-const helpText = `Release helper\n\nUsage:\n  npm run release -- <type> [commit message]\n  npm run release --patch\n  npm run release -- patch \"custom message\"\n  npm run release patch\n  node scripts/release.mjs patch \"custom message\"\n\nTypes:\n  ${allowedTypes.join(', ')}\n\nNotes:\n  - Defaults to \"chore: release v%s\" when you omit a message.\n  - If your message omits %s the version number is appended.\n  - Pushes commits and tags automatically after bumping.`;
+const helpText = `Release helper
+
+Usage:
+  node scripts/release.mjs <type> [commit message]
+  node scripts/release.mjs patch "custom message"
+
+Types:
+  ${allowedTypes.join(', ')}
+
+Notes:
+  - Defaults to "chore: release v%s" when you omit a message.
+  - If your message omits %s the version number is appended.
+  - Pushes commits and tags automatically after bumping.`;
 
 const defaultMessage = 'chore: release v%s';
 const args = process.argv.slice(2);

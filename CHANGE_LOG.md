@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.4] - 2025-09-21
+### Changed
+- Dropped the legacy `release` npm script; documentation now points to `node scripts/release.mjs <type>` for manual version bumps.
+
 ## [1.0.1] - 2025-09-19
 ### Fixed
 - `runCommand`/`runCommandAwait` now attach spawn error handlers, preventing crashes and surfacing failures with clear logs.

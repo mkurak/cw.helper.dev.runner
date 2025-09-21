@@ -69,7 +69,7 @@ Remember to call `runner.stop()` when you need to shut the watcher down programm
 - `npm run test:coverage` – run tests with coverage thresholds enforced
 - `npm run lint` – lint sources and tests with ESLint 9 flat config
 - `npm run format` – apply Prettier formatting
-- `npm run release -- <type>` – bump version, commit, and push tags
+- `node scripts/release.mjs <type>` – bump version, commit, and push tags
 - `npm run prepublishOnly` – build and execute the smoke test ahead of publishing
 
 Pre-commit hooks (installed via `npm run prepare`) run format → lint → coverage to keep the repository consistent.
