@@ -1,12 +1,16 @@
 # Changelog
 
+## [1.0.6] - 2025-09-21
+### Changed
+- Removed the legacy `scripts/release.mjs` helper; releases now rely on `npm version <type>` followed by `git push --follow-tags`.
+
 ## [1.0.5] - 2025-09-21
 ### Fixed
-- Corrected deployment metadata so `node scripts/release.mjs <type>` runs cleanly after the previous patch removal.
+- Adjusted deployment metadata after the release script removal so CI publishing succeeds.
 
 ## [1.0.4] - 2025-09-21
 ### Changed
-- Dropped the legacy `release` npm script; documentation now points to `node scripts/release.mjs <type>` for manual version bumps.
+- Dropped the `release` npm script from package metadata and updated docs to reference `npm version <type>` for bumps.
 
 ## [1.0.1] - 2025-09-19
 ### Fixed

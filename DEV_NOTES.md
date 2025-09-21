@@ -29,15 +29,15 @@
 - `npm run test` – run Jest with Node’s ESM VM modules flag.
 - `npm run test:coverage` – same with coverage thresholds (90% statements/lines/functions).
 - `npm run lint`, `npm run format`, `npm run format:check` – static analysis and formatting.
-- `node scripts/release.mjs <type>` – wraps `npm version` and pushes commits/tags (`scripts/release.mjs`).
+- `npm version <type>` – bumps the version and creates commit/tag; follow with `git push --follow-tags`.
 - `npm run prepublishOnly` – build + smoke test (`scripts/smoke.mjs`) before `npm publish`.
 - `npm run hooks:install` – sets `.githooks` via `scripts/setup-hooks.cjs`; invoked from `npm run prepare`.
 
 ## Release Workflow
 1. Ensure working tree is clean and docs/changelog are updated.
 2. Run tests/lint (`npm run lint && npm run test`).
-3. Execute `node scripts/release.mjs <type>`; defaults to `chore: release v%s` message and pushes automatically.
-4. GitHub Actions workflow `.github/workflows/publish.yml` publishes to npm with provenance when a release is created.
+3. Execute `npm version <type>` (e.g. `npm version patch --message "chore: release v%s"`).
+4. Run `git push --follow-tags`; GitHub Actions `.github/workflows/publish.yml` publishes to npm with provenance once the tag lands on the default branch.
 
 ## Publishing Notes
 - `publishConfig.provenance: true`; local manual publishes require `npm publish --no-provenance` or `NPM_CONFIG_PROVENANCE=false` if outside trusted builder.
